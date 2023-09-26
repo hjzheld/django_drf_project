@@ -1,6 +1,6 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
-from .models import Article
+from .models import Article, Comment
 from .serializers import ArticleListSerializer, ArticleCreateSerializer, CommentSerializer, CommentCreateSerializer
 from rest_framework.response import Response
 from rest_framework import status
@@ -69,6 +69,22 @@ class CommentView(APIView):
     
 class CommentDetailView(APIView):
     def put(self, request, article_id, comment_id):
-        pass
+        comment = get_object_or_404(Comment, id=comment_id)
+        if request.user == comment.author:
+            serializer = CommentCreateSerializer(
+                comment, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response('권한이 없습니다!', status=status.HTTP_403_FORBIDDEN)
+        
     def delete(self, request, article_id, comment_id):
-        pass
+        comment = get_object_or_404(Comment, id=comment_id)
+        if request.user == comment.author:
+            comment.delete()
+            return Response('삭제되었습니다!', status=status.HTTP_200_OK)
+        else:
+            return Response('권한이 없습니다!', status=status.HTTP_403_FORBIDDEN)
