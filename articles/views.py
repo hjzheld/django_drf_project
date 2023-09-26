@@ -1,7 +1,7 @@
 from rest_framework.generics import get_object_or_404
 from rest_framework.views import APIView
 from .models import Article
-from .serializers import ArticleListSerializer, ArticleCreateSerializer
+from .serializers import ArticleListSerializer, ArticleCreateSerializer, CommentSerializer, CommentCreateSerializer
 from rest_framework.response import Response
 from rest_framework import status
 
@@ -13,7 +13,6 @@ class ArticleView(APIView):
     
     def post(self, request):
         serializer = ArticleCreateSerializer(data=request.data)
-        print(serializer)
         if serializer.is_valid():
             serializer.save(author=request.user)
             return Response(serializer.data, status=status.HTTP_200_OK)
@@ -52,3 +51,24 @@ class ArticleAuthorView(APIView):
         serializer = ArticleListSerializer(article, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
         
+class CommentView(APIView):
+    def get(self, request, article_id):
+        article = Article.objects.get(id=article_id)
+        comments = article.comment_set.all()
+        serializer = CommentSerializer(comments, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, article_id):
+        serializer = CommentCreateSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(author=request.user, article_id=article_id)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    
+class CommentDetailView(APIView):
+    def put(self, request, article_id, comment_id):
+        pass
+    def delete(self, request, article_id, comment_id):
+        pass
