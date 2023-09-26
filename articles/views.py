@@ -1,9 +1,11 @@
 from rest_framework.generics import get_object_or_404
+from rest_framework import permissions
 from rest_framework.views import APIView
 from .models import Article, Comment
 from .serializers import ArticleListSerializer, ArticleCreateSerializer, CommentSerializer, CommentCreateSerializer
 from rest_framework.response import Response
 from rest_framework import status
+
 
 class ArticleView(APIView):
     def get(self, request):
@@ -12,6 +14,8 @@ class ArticleView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request):
+        permission_classes = [permissions.IsAuthenticated]
+        
         serializer = ArticleCreateSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save(author=request.user)
