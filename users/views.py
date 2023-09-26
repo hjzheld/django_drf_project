@@ -1,11 +1,13 @@
 from rest_framework.views import APIView
+from rest_framework.generics import get_object_or_404
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework import permissions
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
 )
-from users.serializers import UserSerializer, CustomTokenObtainPairSerializer
+from users.serializers import UserSerializer, CustomTokenObtainPairSerializer, UserProfileSerializer
+from .models import User
 
 
 class UserView(APIView):
@@ -20,11 +22,14 @@ class UserView(APIView):
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
     
-class MockView(APIView):
+class UserProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
-    def get(self, request):
-        user = request.user
-        user.is_admin = True
-        user.save()
-        return Response("get 요청")
+    def get(self, request, user_id):
+        if request.user.id == int(user_id):
+            user = User.objects.filter(id=user_id)
+            serializer = UserProfileSerializer(user, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        else:
+            return Response('권한이 없습니다!', status=status.HTTP_403_FORBIDDEN)
+        
