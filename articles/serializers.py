@@ -22,7 +22,7 @@ class ArticleCreateSerializer(serializers.ModelSerializer):
 class ArticleListSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
 
-    def get_author(serlf, obj):
+    def get_author(self, obj):
         return obj.author.nickname
 
     class Meta:
