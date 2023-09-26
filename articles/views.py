@@ -47,4 +47,8 @@ class ArticleDetailView(APIView):
     
 
 class ArticleAuthorView(APIView):
-    pass
+    def get(self, request, author_id):
+        article =  Article.objects.filter(author_id=author_id)
+        serializer = ArticleListSerializer(article, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
