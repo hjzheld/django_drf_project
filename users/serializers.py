@@ -4,8 +4,11 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from articles.serializers import ArticleListSerializer, CommentSerializer
 
 
+# 프로필
 class UserProfileSerializer(serializers.ModelSerializer):
+    # 글 조회
     article_set = ArticleListSerializer(many=True)
+    # 댓글 조회 
     comment_set = CommentSerializer(many=True)
     
     class Meta:

@@ -9,7 +9,7 @@ from rest_framework_simplejwt.views import (
 from users.serializers import UserSerializer, CustomTokenObtainPairSerializer, UserProfileSerializer
 from .models import User
 
-
+# 회원가입
 class UserView(APIView):
     def post(self, request):
         serializer = UserSerializer(data=request.data)
@@ -19,9 +19,13 @@ class UserView(APIView):
         else :
             return Response({"message":f"$({serializer.errors})"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+#로그인
 class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
-    
+
+
+# 본인 프로필, 글, 댓글 조회   
 class UserProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]
     
