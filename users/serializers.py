@@ -1,12 +1,16 @@
 from rest_framework import serializers
 from users.models import User
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from articles.serializers import ArticleListSerializer, CommentSerializer
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    article_set = ArticleListSerializer(many=True)
+    comment_set = CommentSerializer(many=True)
+    
     class Meta:
         model = User
-        fields = ['email', 'username', 'fullname', 'nickname', 'date_of_birth']
+        fields = ['email', 'username', 'fullname', 'nickname', 'date_of_birth', 'article_set', 'comment_set']
 
 
 
