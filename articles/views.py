@@ -22,7 +22,10 @@ class ArticleView(APIView):
         
     
 class ArticleDetailView(APIView):
-    pass
+    def get(self, request, article_id):
+        article = get_object_or_404(Article, id=article_id)
+        serializer = ArticleListSerializer(article)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class ArticleAuthorView(APIView):
