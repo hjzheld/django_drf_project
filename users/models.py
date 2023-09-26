@@ -47,8 +47,8 @@ class User(AbstractBaseUser):
         max_length=255,
         unique=True,
     )
-    username = models.CharField(max_length=100, default=False)
-    fullname = models.CharField(max_length=100, default=False)
+    username = models.CharField(max_length=100, unique=True)
+    fullname = models.CharField(max_length=100)
     nickname = models.CharField(max_length=100, unique=True)
     date_joined = models.DateTimeField(auto_now_add=True, verbose_name='date joined')
     date_of_birth = models.DateField(null=True, blank=True)
@@ -57,8 +57,8 @@ class User(AbstractBaseUser):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'nickname'
-    REQUIRED_FIELDS = ['username', 'email', 'fullname']
+    USERNAME_FIELD = 'username'
+    REQUIRED_FIELDS = ['nickname', 'email', 'fullname']
 
 
     def __str__(self):
